@@ -1,6 +1,6 @@
 # cryptography
-Semester: 202
-Course: Cryptography and Network Security 
+Semester: 202 \n
+Course: Cryptography and Network Security \n 
 Assignment: Simple Cryptographic Algorithms
 
 ## Create class:

@@ -2,10 +2,9 @@ public class Cipher {
     // Driver code
     public static void main(String[] args)
     {
-        String text = "Put simply, all of the different types and kinds of paragraphs simply involve layering on a different purpose or intent. When students have the right foundation, it’s just that simple. What are you trying to achieve in this paragraph and in your whole composition? What is your purpose right here? Do you wish to describe? Do you want to evaluate? Is your goal to narrate? Is your intent to persuade?";
-        int key = 4;
+        String text = "Sunset is the time of day when our sky meets the outer space solar winds. There are blue, pink, and purple swirls, spinning and twisting, like clouds of balloons caught in a whirlwind. The sun moves slowly to hide behind the line of horizon, while the moon races to take its place in prominence atop the night sky. People slow to a crawl, entranced, fully forgetting the deeds that must still be done. There is a coolness, a calmness, when the sun does set.";
+        int key = 22;
         System.out.println("Text  : " + text);
-        char space = ' ';
         System.out.println("Shift : " + key);
 
         // Encrypt
@@ -31,5 +30,6 @@ public class Cipher {
 
         String plaintext = Descrypt.caesar_without_key(caesar_cipher).toString();
         System.out.println("\n\nPlaintext without key: \t" + plaintext);
+        System.out.println("Predicted key: " + ((int)(caesar_cipher.charAt(0) - plaintext.charAt(0)) + 26) % 26);
     }
 }

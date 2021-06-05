@@ -1,10 +1,10 @@
 # cryptography
 
-Create class:
+## Create class:
 javac Encrypt.java Descrypt.java
 
-Run module:
+## Run module:
 java Encrypt Descrypt
 
-Run file:
+## Run file:
 java Cipher.java

@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Descrypt {
+public class Decrypt {
     private static char[] single_letters = {'e', 't', 'a', 'o', 'i', 'n', 
                                                 's', 'h', 'r', 'd', 'l', 'u'};
 
@@ -205,6 +205,6 @@ public class Descrypt {
     // Driver code
     public static void main(String[] args)
     {
-        System.out.println("=== Descrypt Phase ===");
+        System.out.println("=== Decrypt Phase ===");
     }
 }

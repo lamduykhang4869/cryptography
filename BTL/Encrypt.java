@@ -62,7 +62,7 @@ public class Encrypt {
     // Driver code
     public static void main(String[] args)
     {
-        String text = "=== Encrypt Phase ===";
-        System.out.println(text);
+        // String text = "=== Encrypt Phase ===";
+        // System.out.println(text);
     }
 }

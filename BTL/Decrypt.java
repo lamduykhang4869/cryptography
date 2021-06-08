@@ -13,6 +13,11 @@ import java.util.LinkedHashMap;
 import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.File;
 
 public class Decrypt {
     private static char[] single_letters = {'e', 't', 'a', 'o', 'i', 'n', 
@@ -70,41 +75,34 @@ public class Decrypt {
 
     // Rail Fence Cipher descrypt                                                                                       function                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     public static StringBuffer rail_fence(String cipher, int key)
-    {                                                                                           
-        try{
-            if (key == 1){
-                StringBuffer sb = new StringBuffer();
-                sb.append(cipher);
-                return sb;
-            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ;
-            StringBuffer result = new StringBuffer(cipher);
-            int cur = 0;
-            for (int i = 0; i < key; i++)
-            {
-                int index = i;
-                boolean down = true;
-                while(index < cipher.length()){
-                    result.setCharAt(index, cipher.charAt(cur++));
-                    
-                    if (i == 0 || i == key - 1)
-                        index += 2 * (key - 1);
-                    else if (down){
-                        index += 2 * (key - i - 1);
-                        down = !down;
-                    }
-                    else{
-                        index += 2 * i;
-                        down = !down;   
-                    } 
+    {        
+        if (key == 1){
+            StringBuffer sb = new StringBuffer();
+            sb.append(cipher);
+            return sb;
+        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ;
+        StringBuffer result = new StringBuffer(cipher);
+        int cur = 0;
+        for (int i = 0; i < key; i++)
+        {
+            int index = i;
+            boolean down = true;
+            while(index < cipher.length()){
+                result.setCharAt(index, cipher.charAt(cur++));
+                
+                if (i == 0 || i == key - 1)
+                    index += 2 * (key - 1);
+                else if (down){
+                    index += 2 * (key - i - 1);
+                    down = !down;
                 }
+                else{
+                    index += 2 * i;
+                    down = !down;   
+                } 
             }
-            return result;
         }
-        catch(Exception e){
-            System.out.println("Program stop at key = " + key);
-            System.out.println(e);
-            return null;
-        }
+        return result;
     }
 
     // Product Cipher descrypt function
@@ -173,12 +171,13 @@ public class Decrypt {
         return arg;
     }
 
-    public static CipherResult rail_fence_without_key(String cipher){
+    public static void rail_fence_without_key(String cipherTextFileName){
         
+        String cipher = Encrypt.readFile(cipherTextFileName);
         // Round 1
         List<Integer> most_common_keys = IntStream.range(1, cipher.length() + 1).boxed().collect(Collectors.toList());
         List<String> candidates = most_common_keys.stream().map(x -> rail_fence(cipher, x).toString()).collect(Collectors.toList());
-        System.out.println(candidates);
+        // System.out.println(candidates);
         
         // Round 2
         List<Integer> scores = new ArrayList<Integer>();
@@ -207,19 +206,24 @@ public class Decrypt {
 
         // Round 8
         scores = updateScore(scores, candidates, Arrays.asList(four_letter_words), false);
-        System.out.println(scores);
+        // System.out.println(scores);
 
-        return new CipherResult(candidates.get(argmax(scores)), argmax(scores) + 1);
+        String result = "Key = " + (argmax(scores) + 1) +  
+                        "\nPredicted text = " +  candidates.get(argmax(scores));
+        Encrypt.writeFile("rail_fence_predicted.txt", result);
+
     }
 
-    public static CipherResult caesar_without_key(String cipher){
+    public static void caesar_without_key(String cipherTextFileName){
         
+        String cipher = Encrypt.readFile(cipherTextFileName);
+
         // Round 1
         char most_common_letter = (char) count(cipher).keySet().toArray()[0];
         Stream<Character> cStream = IntStream.range(0, single_letters.length).mapToObj(i -> single_letters[i]);
         List<Integer> most_common_keys = cStream.map(x -> ((int)(most_common_letter - x)) % 26).collect(Collectors.toList());
         List<String> candidates = most_common_keys.stream().map(x -> caesar(cipher, x).toString()).collect(Collectors.toList());
-        System.out.println(candidates);
+        // System.out.println(candidates);
         
         // Round 2
         List<Integer> scores = new ArrayList<Integer>();
@@ -248,9 +252,14 @@ public class Decrypt {
 
         // Round 8
         scores = updateScore(scores, candidates, Arrays.asList(four_letter_words), false);
-        System.out.println(scores);
+        // System.out.println(scores);
 
-        return new CipherResult(candidates.get(argmax(scores)), argmax(scores) + 1);
+        String predicted_text = candidates.get(argmax(scores));
+        int key = ((int) (cipher.charAt(0)) - predicted_text.charAt(0) + 26) % 26;
+        String result = "Key = " + key +  
+                        "\nPredicted text = " +  predicted_text;
+        Encrypt.writeFile("caesar_predicted.txt", result);
+
     }
 
     // Driver code
